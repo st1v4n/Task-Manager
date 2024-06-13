@@ -5,12 +5,13 @@
 
 //I am not going to use ctime or iomanip
 #include <iostream>
-#include "Optional.hpp"
-#include "Date.h"
-
+#include "Task.h"
 int main()
 {
-    std::cout << getDays(2,1624);
+    Date currentDate(13, 05, 2027);
+    Date date(17, 05, 2027);
+    Task task(123, "homework", date, Status::IN_PROCESS, "Simple solutions");
+    task.print(std::cout, currentDate);
 }
 
 

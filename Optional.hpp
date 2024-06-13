@@ -9,7 +9,7 @@ public:
 	bool isValueSet() const;
 private:
 	T value;
-	bool isSet = false;;
+	bool isSet = false;
 };
 
 template<typename T>

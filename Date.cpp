@@ -1,8 +1,13 @@
 #include "Date.h"
 
+Date::Date(uint16_t day, uint16_t month, int32_t year)
+{
+	setDate(day, month, year);
+}
+
 void Date::print() const
 {
-	std::cout << day << '.' << month << '.' << year << std::endl;
+	std::cout << day << date_separator << month << date_separator << year << std::endl;
 }
 
 void Date::setDate(const Date& newDate)
@@ -43,19 +48,34 @@ int32_t Date::getYear() const
 	return year;
 }
 
-bool operator!=(const Date& date1, const Date& date2)
+bool operator==(const Date& date1, const Date& date2)
 {
 	return (date1.day == date2.day && date1.month == date2.month && date1.year == date2.year);
 }
 
-uint16_t Date::getRemaining(const Date& end)
+std::ostream& operator<<(std::ostream& os, const Date& date)
+{
+	std::cout << date.day << date_separator << date.month << date_separator << date.year;
+	return os;
+}
+
+uint16_t Date::getRemainingDays(const Date& end) const
 {
 	Date start(*this);
 	uint16_t count = 0;
-	while (start != end) {
-		//
-		//
-		//
+	uint16_t maxDays = getDays(start.month, start.year);
+	while (!(start == end)) {
+		start.day++;
+		count++;
+		if (start.day > maxDays) {
+			start.month++;
+			start.day = 1;
+			if (start.month > (int)Months::DECEMBER) {
+				start.year++;
+				start.month = (int)Months::JANUARY;
+			}
+			maxDays = getDays(start.month, start.year);
+		}
 	}
 	return count;
 }
