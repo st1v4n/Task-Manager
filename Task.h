@@ -4,12 +4,11 @@
 #include "Optional.hpp"
 #include "StringFunctions.h"
 namespace TASK_CONSTANTS {
-	//LNK2005 error hits hard
-	static Date defaultDate(1, 1, 1);
-	static char border[23] = "*--------------------*";
+	const Date defaultDate(1, 1, 1);
+	const char border[23] = "*--------------------*";
 	//we will need a symbol to know if a task has a Due_date set (when we serialize to file)
-	static char special_date_symbol = '#';
-	static char separator = ' ';
+	const char special_date_symbol = '#';
+	const char separator = ' ';
 }
 enum class Status {
 	ON_HOLD,
@@ -21,10 +20,8 @@ class Task
 {
 public:
 	Task() = default;
-	//we will delete the copy constructor and op= because we cannot have two of the same tasks at once
-	Task(const Task&) = delete;
-	Task& operator=(const Task&) = delete;
-	//but we will allow move constructor and move op=
+	Task(const Task& other);
+	Task& operator=(const Task& other);
 	Task(Task&& other) noexcept;
 	Task& operator=(Task&& other) noexcept;
 	~Task() noexcept;
@@ -49,6 +46,7 @@ private:
 	Status status = Status::ON_HOLD;
 	char* description = nullptr;
 	void free();
+	void copyFrom(const Task& other);
 	void moveFrom(Task&& other);
 };
 

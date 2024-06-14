@@ -5,13 +5,22 @@
 
 //I am not going to use ctime or iomanip
 #include <iostream>
+#include <fstream>
 #include "Task.h"
+#include "User.h"
+#include "Command.h"
+#include "AllCommands.h"
 int main()
 {
-    Date currentDate(13, 05, 2027);
-    Date date(17, 05, 2027);
-    Task task(123, "homework", date, Status::IN_PROCESS, "Simple solutions");
-    task.print(std::cout, currentDate);
+    User user;
+    try {
+        Command* com = new LoginCommand;
+        com->execute(user);
+        delete com;
+    }
+    catch (std::exception& ex) {
+        std::cout << ex.what();
+    }
 }
 
 

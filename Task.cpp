@@ -9,6 +9,17 @@ void Task::free()
 	description = nullptr;
 }
 
+void Task::copyFrom(const Task& other)
+{
+	id = other.id;
+	name = new char[strleng(other.name) + 1];
+	strcopy(name, other.name);
+	due_date = other.due_date;
+	status = other.status;
+	description = new char[strleng(other.description) + 1];
+	strcopy(description, other.description);
+}
+
 void Task::moveFrom(Task&& other)
 {
 	this->id = other.id;
@@ -22,6 +33,20 @@ void Task::moveFrom(Task&& other)
 	this->description = new char[strleng(other.description) + 1];
 	strcopy(description, other.description);
 	other.description = nullptr;
+}
+
+Task::Task(const Task& other)
+{
+	copyFrom(other);
+}
+
+Task& Task::operator=(const Task& other)
+{
+	if (this != &other) {
+		free();
+		copyFrom(other);
+	}
+	return *this;
 }
 
 Task::Task(Task&& other) noexcept

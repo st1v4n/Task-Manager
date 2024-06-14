@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include "DateFunctions.h"
-static char date_separator = '-';
+const char date_separator = '-';
 class Date
 {
 public:
