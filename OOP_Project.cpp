@@ -14,8 +14,21 @@
 int main()
 {
     User user;
+    std::cout << "Enter your current Date (Format: DAY-MONTH-YEAR): ";
+    char buff[100];
+    std::cin >> buff;
+    Date currentDate;
+    try {
+        currentDate = stringToDate(buff);
+    }
+    catch (std::exception& ex) {
+        std::cout << ex.what() << std::endl;
+        std::cout << "Your date will be set to 01-01-01 \n";
+    }
+    user.updateTasks().setCurrentDate(currentDate);
     while (true) {
         try {
+            std::cout << "> ";
             char buff[30];
             std::cin >> buff;
             Command* command = factory(buff);

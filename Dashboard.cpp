@@ -24,3 +24,8 @@ const Task& Dashboard::getElement(int index) const
 {
 	return tasks[index];
 }
+
+Task& Dashboard::updateElement(int index)
+{
+	return tasks[index];
+}

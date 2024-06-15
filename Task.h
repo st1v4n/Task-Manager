@@ -46,6 +46,7 @@ private:
 	Status status = Status::ON_HOLD;
 	char* description = nullptr;
 	//we will need a special bool to check if a task is added to the dashboard
+	//no one expects it to be here, so we will make it mutable
 	mutable bool isAdded = false;
 	void free();
 	void copyFrom(const Task& other);

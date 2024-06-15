@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <fstream>
+#include "Date.h"
 static size_t strleng(const char* str) {
 	if (!str)return -1;
 	size_t count = 0;
@@ -61,4 +62,25 @@ static int stringToInt(const char* str) {
 		str++;
 	}
 	return result;
+}
+static Date stringToDate(const char* str) {
+	int day = 0;
+	while ((*str) != date_separator) {
+		(day *= 10) += (*str) - '0';
+		str++;
+	}
+	str++;
+	int month = 0;
+	while ((*str) != date_separator) {
+		(month *= 10) += (*str) - '0';
+		str++;
+	}
+	str++;
+	int year = 0;
+	while (*str) {
+		(year *= 10) += (*str) - '0';
+		str++;
+	}
+	Date date(day, month, year);
+	return date;
 }

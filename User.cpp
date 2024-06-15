@@ -84,3 +84,11 @@ Dashboard& User::updateTasks()
 {
 	return tasks;
 }
+
+void User::printAllTasks(std::ostream& os) const
+{
+	size_t size = tasks.getSize();
+	for (int i = 0;i < size;i++) {
+		tasks.getElement(i).print(os,tasks.getCurrentDate());
+	}
+}

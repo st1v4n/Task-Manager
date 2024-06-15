@@ -10,6 +10,7 @@ public:
 	void addTask(const Task& newTask);
 	size_t getSize() const;
 	const Task& getElement(int index) const;
+	Task& updateElement(int index);
 private:
 	myVector<Task> tasks;
 	Date currentDate = TASK_CONSTANTS::defaultDate;

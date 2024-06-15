@@ -53,6 +53,21 @@ bool operator==(const Date& date1, const Date& date2)
 	return (date1.day == date2.day && date1.month == date2.month && date1.year == date2.year);
 }
 
+bool operator<(const Date& date1, const Date& date2)
+{
+	//dont ask, will try to limit the usage of this function to minimum
+	if (date1.year > date2.year)return false;
+	else if (date1.year < date2.year)return true;
+	else {
+		if (date1.month > date2.month)return false;
+		else if (date1.month < date2.month)return true;
+		else {
+			if (date1.day >= date2.day)return false;
+			else return true;
+		}
+	}
+}
+
 std::ostream& operator<<(std::ostream& os, const Date& date)
 {
 	std::cout << date.day << date_separator << date.month << date_separator << date.year;
@@ -62,6 +77,7 @@ std::ostream& operator<<(std::ostream& os, const Date& date)
 uint16_t Date::getRemainingDays(const Date& end) const
 {
 	Date start(*this);
+	if (end < start)return 0;
 	uint16_t count = 0;
 	uint16_t maxDays = getDays(start.month, start.year);
 	while (!(start == end)) {

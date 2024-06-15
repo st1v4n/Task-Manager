@@ -2,6 +2,8 @@
 int id = 1;
 void RegisterCommand::execute(User& user) const
 {
+	//our register command will add to data.dat only the username and password of each user
+	//their info (tasks) will be saved to different files according to their usernames
 	std::ofstream ofs(dataFileName, std::ios::binary | std::ios::out | std::ios::app);
 	if(!ofs.is_open())throw std::logic_error("Cannot open file!");
 	char username[50];
@@ -13,11 +15,13 @@ void RegisterCommand::execute(User& user) const
 	try {
 		User newUser(username, password);
 		user = newUser;
+		//user_symbol is a special symbol defined by me to set a border between each user, so we can make the reading much easier
 		ofs.write((const char*)&user_symbol, sizeof(char));
 		ofs.write(username, strleng(username) + 1);
 		ofs.write(password, strleng(password) + 1);
 	}
 	catch (std::exception& ex) {
+		//if we had an invalid input in username or password
 		std::cout << ex.what() << '\n';
 		ofs.clear();
 		return;
@@ -26,6 +30,7 @@ void RegisterCommand::execute(User& user) const
 	ofs.close();
 }
 static void readData(char*& dest, std::ifstream& fs) {
+	//all of this functions could be in other files, sorry
 	char buff[50]{ '\0' };
 	int count = 0;
 	char symbol;
@@ -60,6 +65,7 @@ static Date& getDateFromFile(std::ifstream& ifs) {
 }
 Status stringToStatus(const char* str)
 {
+	//in the files we will actually save the status as a string and we have to parse it to Status type
 	if (strcompare(str, "ON_HOLD"))return Status::ON_HOLD;
 	else if (strcompare(str, "IN_PROCESS"))return Status::IN_PROCESS;
 	else if (strcompare(str, "DONE"))return Status::DONE;
@@ -69,7 +75,7 @@ Status stringToStatus(const char* str)
 void LoginCommand::getInfo(User& user) const
 {
 	//every user will have a specific file for themselves
-	//in that file we will save their dashboard
+	//in that file we will save their tasks (all of them)
 	char* fileName = strconcat(user.getUsername(), ".dat");
 	std::ifstream ifs(fileName, std::ios::binary | std::ios::in);
 	if (!ifs.is_open()) {
@@ -77,8 +83,11 @@ void LoginCommand::getInfo(User& user) const
 		delete[] fileName;
 		return;
 	}
+	//we will call the array of tasks 'dashboard', because at first i didnt understand the rules and made a class Dashboard
+	//the Dashboard from the rules is actually a part of all tasks (from a specific date)
 	Dashboard dashboard;
 	while (!ifs.eof()) {
+		//kinda Introduction to Programming logic here, maybe I could create a new file to hide it better
 		Task task;
 		int id;
 		ifs.read((char*)&id, sizeof(int));
@@ -114,6 +123,11 @@ void LoginCommand::getInfo(User& user) const
 }
 void LoginCommand::execute(User& user) const
 {
+	//login USERNAME PASSWORD
+	//we search in the file data.dat for the username and password that were input
+	//if we cannot find them, it means the user doesnt have a profile yet
+	//but if we manage to find them, we load their Tasks
+	//if they dont have any tasks, we will output a message
 	std::ifstream ifs(dataFileName, std::ios::binary | std::ios::in);
 	if (!ifs.is_open())throw std::logic_error("Cannot open file!");
 	char username[50];
@@ -147,51 +161,53 @@ void LoginCommand::execute(User& user) const
 	}
 	ifs.clear();
 	ifs.close();
+	//if we dont have such account yet
 	throw std::logic_error("No such account in existance!");
 }
-static Date stringToDate(const char* str) {
-	int day = 0;
-	while ((*str) != date_separator) {
-		(day *= 10) += (*str) - '0';
-		str++;
+static bool isDate(const char* data) {
+	//checking if the input string is in date format DAY-MONTH-YEAR
+	//we do that because the due_date is Optional
+	int count = 0;
+	while (*data) {
+		if ((*data) == date_separator)count++;
+		else if ((*data) < '0' || (*data) > '9')return false;
+		data++;
 	}
-	str++;
-	int month = 0;
-	while ((*str) != date_separator) {
-		(month *= 10) += (*str) - '0';
-		str++;
-	}
-	str++;
-	int year = 0;
-	while (*str) {
-		(year *= 10) += (*str) - '0';
-		str++;
-	}
-	Date date(day, month, year);
-	return date;
+	return count == 2; // if we had the date_separator symbol 2 times
 }
 void AddTaskCommand::execute(User& user) const
 {
 	try {
+		//add-task is a function that could skip the input of due_date
+		//thats why we have to check the different scenarios of input
+		//it creates a new task and inserts it into the tasks vector of the current user
 		Task task;
 		char name[256];
 		std::cin >> name;
 		char date[50];
 		std::cin >> date;
-		Date dateFormat = stringToDate(date);
-		char description[256];
-		std::cin >> description;
+		//because the due_date is optional
+		if (!isDate(date)) {
+			task.setDescription(date);
+		}
+		else {
+			Date dateFormat = stringToDate(date);
+			task.setDueDate(dateFormat);
+			char description[256];
+			std::cin >> description;
+			task.setDescription(description);
+		}
 		task.setId(id);
 		id++;
-		task.setDescription(description);
 		task.setName(name);
-		task.setDueDate(dateFormat);
 		size_t size = user.getTasks().getSize();
 		for (int i = 0;i < size;i++) {
+			//checking if there are 2 tasks with the same name, because that is not allowed
 			if (strcompare(user.getTasks().getElement(i).getName(), name)) {
 				throw std::logic_error("Task already exists!");
 			}
 		}
+		if (task.getDueDate() < user.getTasks().getCurrentDate())task.setStatus(Status::OVERDUE);
 		user.updateTasks().addTask(task);
 		std::cout << "Task added successfully! \n";
 	}
@@ -199,3 +215,61 @@ void AddTaskCommand::execute(User& user) const
 		std::cout << ex.what() << '\n';
 	}
 }
+
+void ListTasksCommand::execute(User& user) const
+{
+	//this will print all the available tasks at the moment, but we have another function that prints only the Dashboard
+	user.printAllTasks(std::cout);
+}
+
+void UpdateTaskNameCommand::execute(User& user) const
+{
+	int id;
+	std::cin >> id;
+	char name[50];
+	std::cin >> name;
+	if (!name) return;
+	size_t taskSize = user.getTasks().getSize();
+	for (int i = 0;i < taskSize;i++) {
+		if (user.getTasks().getElement(i).getId() == id) {
+			user.updateTasks().updateElement(i).setName(name);
+			std::cout << "Updating task was successful! \n";
+			return;
+		}
+	}
+	std::cout << "Couldnt find that task! \n";
+}
+
+void UpdateTaskDescriptionCommand::execute(User& user) const
+{
+	int id;
+	std::cin >> id;
+	char description[256];
+	std::cin >> description;
+	if (!description) return;
+	size_t taskSize = user.getTasks().getSize();
+	for (int i = 0;i < taskSize;i++) {
+		if (user.getTasks().getElement(i).getId() == id) {
+			user.updateTasks().updateElement(i).setDescription(description);
+			std::cout << "Updating task was successful! \n";
+			return;
+		}
+	}
+	std::cout << "Couldnt find that task! \n";
+}
+
+void StartTaskCommand::execute(User& user) const
+{
+	int id;
+	std::cin >> id;
+	size_t size = user.getTasks().getSize();
+	for (int i = 0;i < size;i++) {
+		if (user.getTasks().getElement(i).getId() == id) {
+			user.updateTasks().updateElement(i).setStatus(Status::IN_PROCESS);
+			std::cout << "Your task status has been set to IN_PROCESS! \n";
+			return;
+		}
+	}
+	std::cout << "Couldnt find that task! \n";
+}
+

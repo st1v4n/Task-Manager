@@ -14,3 +14,18 @@ class LoginCommand : public Command {
 class AddTaskCommand : public Command {
 	void execute(User& user) const override;
 };
+class UpdateTaskCommand : public Command {
+	virtual void execute(User& user) const = 0;
+};
+class UpdateTaskNameCommand : public UpdateTaskCommand {
+	void execute(User& user) const override;
+};
+class UpdateTaskDescriptionCommand : public UpdateTaskCommand {
+	void execute(User& user) const override;
+};
+class StartTaskCommand : public Command {
+	void execute(User& user) const override;
+};
+class ListTasksCommand : public Command {
+	void execute(User& user) const override;
+};

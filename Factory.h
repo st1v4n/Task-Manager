@@ -14,6 +14,18 @@ Command* factory(const char* str) {
 	else if (strcompare(str, "add-task")) {
 		return new AddTaskCommand;
 	}
+	else if (strcompare(str, "update-task-name")) {
+		return new UpdateTaskNameCommand;
+	}
+	else if (strcompare(str, "update-task-description")) {
+		return new UpdateTaskDescriptionCommand;
+	}
+	else if (strcompare(str, "start-task")) {
+		return new StartTaskCommand;
+	}
+	else if (strcompare(str, "list-tasks")) {
+		return new ListTasksCommand;
+	}
 	return nullptr;
 }
 

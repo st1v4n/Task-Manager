@@ -16,6 +16,7 @@ public:
 	int32_t getYear() const;
 	//we will define a functions that helps us calculate the number of days between two dates
 	friend bool operator==(const Date& date1, const Date& date2);
+	friend bool operator<(const Date& date1, const Date& date2);
 	uint16_t getRemainingDays(const Date& end) const;
 	friend std::ostream& operator<<(std::ostream& os, const Date& date);
 private:

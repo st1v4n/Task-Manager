@@ -18,10 +18,15 @@ public:
 	void setTasks(const Dashboard& tasks);
 	const Dashboard& getTasks() const;
 	Dashboard& updateTasks();
+	//all tasks
+	void printAllTasks(std::ostream& os) const;
+	//the dashboard tasks only
+	void printDashboard(const Date& date) const;
 private:
 	char* username = nullptr;
 	char* password = nullptr;
-	//all user tasks;
+	//all user tasks, I didnt get the rules correctly at first and created a Dashboard class
+	//The dashboard itself has a mutable bool variable that indicates if a specific task should be shown in the dashboard 
 	Dashboard tasks;
 	void free();
 	void copyFrom(const User& other);
