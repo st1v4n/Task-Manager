@@ -1,9 +1,10 @@
 #include "AllCommands.h"
-int id = 1;
+int globalId = 1;
 void RegisterCommand::execute(User& user) const
 {
 	//our register command will add to data.dat only the username and password of each user
 	//their info (tasks) will be saved to different files according to their usernames
+	globalId = 1;
 	std::ofstream ofs(dataFileName, std::ios::binary | std::ios::out | std::ios::app);
 	if(!ofs.is_open())throw std::logic_error("Cannot open file!");
 	char username[50];
@@ -115,6 +116,7 @@ void LoginCommand::getInfo(User& user) const
 		ifs.ignore();
 		task.setDescription(description);
 		dashboard.addTask(task);
+		globalId++;
 	}
 	user.setTasks(dashboard);
 	ifs.clear();
@@ -196,18 +198,18 @@ void AddTaskCommand::execute(User& user) const
 			char description[256];
 			std::cin >> description;
 			task.setDescription(description);
+			if (task.getDueDate() < user.getTasks().getCurrentDate())task.setStatus(Status::OVERDUE);
 		}
-		task.setId(id);
-		id++;
+		task.setId(globalId);
+		globalId++;
 		task.setName(name);
 		size_t size = user.getTasks().getSize();
 		for (int i = 0;i < size;i++) {
 			//checking if there are 2 tasks with the same name, because that is not allowed
-			if (strcompare(user.getTasks().getElement(i).getName(), name)) {
+			if (strcompare(user.getTasks().getElement(i).getName(), name) && user.getTasks().getElement(i).getDueDate() == task.getDueDate()) {
 				throw std::logic_error("Task already exists!");
 			}
 		}
-		if (task.getDueDate() < user.getTasks().getCurrentDate())task.setStatus(Status::OVERDUE);
 		user.updateTasks().addTask(task);
 		std::cout << "Task added successfully! \n";
 	}
@@ -273,3 +275,88 @@ void StartTaskCommand::execute(User& user) const
 	std::cout << "Couldnt find that task! \n";
 }
 
+void RemoveTaskDashboardCommand::execute(User& user) const
+{
+	int id;
+	std::cin >> id;
+	size_t size = user.getTasks().getSize();
+	for (int i = 0;i < size;i++) {
+		if (user.getTasks().getElement(i).getId() == id) {
+			user.updateTasks().updateElement(i).setAdded(false);
+			std::cout << "Removed from the dashboard successfully! \n";
+			return;
+		}
+	}
+	std::cout << "Couldnt find that task! \n";
+}
+
+void AddTaskDashboardCommand::execute(User& user) const
+{
+	int id;
+	std::cin >> id;
+	size_t size = user.getTasks().getSize();
+	for (int i = 0;i < size;i++) {
+		if (user.getTasks().getElement(i).getId() == id && user.getTasks().getElement(i).getStatus()!=Status::OVERDUE) {
+			user.updateTasks().updateElement(i).setAdded(true);
+			std::cout << "Added to the dashboard successfully! \n";
+			return;
+		}
+	}
+	std::cout << "Couldnt find that task! \n";
+}
+
+void DeleteTaskCommand::execute(User& user) const
+{
+	int id;
+	std::cin >> id;
+	size_t size = user.getTasks().getSize();
+	for (int i = 0;i < size;i++) {
+		if (user.getTasks().getElement(i).getId() == id) {
+			user.updateTasks().deleteElement(i);
+			std::cout << "Deleted successfully! \n";
+			return;
+		}
+	}
+	std::cout << "Couldnt find that task! \n";
+}
+static void getByName(User& user, const char* name) {
+	size_t size = user.getTasks().getSize();
+	for (int i = 0;i < size;i++) {
+		if (strcompare(user.getTasks().getElement(i).getName(),name)) {
+			user.getTasks().getElement(i).print(std::cout, user.getTasks().getCurrentDate());
+			return;
+		}
+	}
+	std::cout << "Couldnt find that task! \n";
+}
+static bool isNumber(const char* buff) {
+	if (!buff)return false;
+	while (*buff) {
+		if ((*buff) < '0' || (*buff) > '9') {
+			return false;
+		}
+		buff++;
+	}
+	return true;
+}
+void GetTaskCommand::execute(User& user) const
+{
+	char buff[50];
+    std::cin >> buff;
+	//we can get this command with id or name
+	//we have to check if the data that was input is an id
+	//if it contains atleast one symbol that is not from [0 to 9], then its not a id for sure 
+	if (!isNumber(buff)) {
+		getByName(user, buff);
+		return;
+	}
+	int id = stringToInt(buff);
+	size_t size = user.getTasks().getSize();
+	for (int i = 0;i < size;i++) {
+		if (user.getTasks().getElement(i).getId() == id) {
+			user.getTasks().getElement(i).print(std::cout,user.getTasks().getCurrentDate());
+			return;
+		}
+	}
+	std::cout << "Couldnt find that task! \n";
+}

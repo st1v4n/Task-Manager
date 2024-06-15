@@ -39,6 +39,8 @@ public:
 	void setDescription(const char* description);
 	//print function can work with different output streams
 	void print(std::ostream& os, const Date& currentDate) const;
+	void setAdded(bool isAdded);
+	bool isAddedToDashboard() const;
 private:
 	int id = 0;
 	char* name = nullptr;
@@ -46,8 +48,7 @@ private:
 	Status status = Status::ON_HOLD;
 	char* description = nullptr;
 	//we will need a special bool to check if a task is added to the dashboard
-	//no one expects it to be here, so we will make it mutable
-	mutable bool isAdded = false;
+	bool isAdded = false;
 	void free();
 	void copyFrom(const Task& other);
 	void moveFrom(Task&& other);

@@ -26,6 +26,18 @@ Command* factory(const char* str) {
 	else if (strcompare(str, "list-tasks")) {
 		return new ListTasksCommand;
 	}
+	else if (strcompare(str, "remove-task-from-dashboard")) {
+		return new RemoveTaskDashboardCommand;
+	}
+	else if (strcompare(str, "add-task-to-dashboard")) {
+		return new AddTaskDashboardCommand;
+	}
+	else if (strcompare(str, "delete-task")) {
+		return new DeleteTaskCommand;
+	}
+	else if (strcompare(str, "get-task")) {
+		return new GetTaskCommand;
+	}
 	return nullptr;
 }
 

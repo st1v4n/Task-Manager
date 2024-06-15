@@ -29,3 +29,8 @@ Task& Dashboard::updateElement(int index)
 {
 	return tasks[index];
 }
+
+void Dashboard::deleteElement(int index)
+{
+	tasks.erase(index);
+}

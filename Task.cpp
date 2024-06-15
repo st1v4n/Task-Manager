@@ -165,3 +165,13 @@ void Task::print(std::ostream& os, const Date& currentDate) const
 	os << TASK_CONSTANTS::border << '\n';
 }
 
+void Task::setAdded(bool isAdded)
+{
+	this->isAdded = isAdded;
+}
+
+bool Task::isAddedToDashboard() const
+{
+	return isAdded;
+}
+

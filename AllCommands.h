@@ -29,3 +29,15 @@ class StartTaskCommand : public Command {
 class ListTasksCommand : public Command {
 	void execute(User& user) const override;
 };
+class RemoveTaskDashboardCommand : public Command {
+	void execute(User& user) const override;
+};
+class AddTaskDashboardCommand : public Command {
+	void execute(User& user) const override;
+};
+class DeleteTaskCommand : public Command {
+	void execute(User& user) const override;
+};
+class GetTaskCommand : public Command {
+	void execute(User& user) const override;
+};
