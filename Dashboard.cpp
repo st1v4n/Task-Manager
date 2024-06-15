@@ -14,3 +14,13 @@ void Dashboard::addTask(const Task& newTask)
 {
 	tasks.push_back(newTask);
 }
+
+size_t Dashboard::getSize() const
+{
+	return tasks.getSize();
+}
+
+const Task& Dashboard::getElement(int index) const
+{
+	return tasks[index];
+}

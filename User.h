@@ -15,11 +15,13 @@ public:
 	~User();
 	User(const char* username, const char* password);
 	const char* getUsername() const;
-	void setDashboard(const Dashboard& dashboard);
-	const Dashboard& getDashboard() const;
+	void setTasks(const Dashboard& tasks);
+	const Dashboard& getTasks() const;
+	Dashboard& updateTasks();
 private:
 	char* username = nullptr;
 	char* password = nullptr;
+	//all user tasks;
 	Dashboard tasks;
 	void free();
 	void copyFrom(const User& other);

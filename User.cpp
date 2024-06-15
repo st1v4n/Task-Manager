@@ -71,13 +71,16 @@ const char* User::getUsername() const
 {
 	return username;
 }
-
-void User::setDashboard(const Dashboard& dashboard)
+void User::setTasks(const Dashboard& tasks)
 {
-	this->tasks = dashboard;
+	this->tasks = tasks;
+}
+const Dashboard& User::getTasks() const
+{
+	return tasks;
 }
 
-const Dashboard& User::getDashboard() const
+Dashboard& User::updateTasks()
 {
 	return tasks;
 }

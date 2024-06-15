@@ -16,7 +16,6 @@ enum class Status {
 	DONE,
 	OVERDUE
 };
-static Status stringToStatus(const char* str);
 class Task
 {
 public:
@@ -46,6 +45,8 @@ private:
 	Optional<Date> due_date;
 	Status status = Status::ON_HOLD;
 	char* description = nullptr;
+	//we will need a special bool to check if a task is added to the dashboard
+	mutable bool isAdded = false;
 	void free();
 	void copyFrom(const Task& other);
 	void moveFrom(Task&& other);

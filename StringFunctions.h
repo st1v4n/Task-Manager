@@ -28,23 +28,22 @@ static void strcopy(char* dest, const char* source) {
 	}
 	(*dest) = '\0';
 }
-char* strconcat(const char* str1, const char* str2) {
+static char* strconcat(const char* str1, const char* str2) {
 	if (!str1 || !str2)return nullptr;
 	char* result = new char[strleng(str1) + strleng(str2) + 1];
+	int count = 0;
 	while (*str1) {
-		(*result) = (*str1);
-		result++;
+		result[count++] = (*str1);
 		str1++;
 	}
 	while (*str2) {
-		(*result) = (*str2);
-		result++;
+		result[count++] = (*str2);
 		str2++;
 	}
-	(*result) = '\0';
+	result[count] = '\0';
 	return result;
 }
-void readStringFromFile(std::ifstream& ifs, char* str) {
+static void readStringFromFile(std::ifstream& ifs, char* str) {
 	char symbol;
 	ifs.read((char*)&symbol, sizeof(char));
 	while (symbol) {
@@ -54,7 +53,7 @@ void readStringFromFile(std::ifstream& ifs, char* str) {
 	}
 	(*str) = '\0';
 }
-int stringToInt(const char* str) {
+static int stringToInt(const char* str) {
 	if (!str)return -1;
 	int result=0;
 	while (*str) {

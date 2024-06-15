@@ -1,5 +1,5 @@
 #include "AllCommands.h"
-
+int id = 1;
 void RegisterCommand::execute(User& user) const
 {
 	std::ofstream ofs(dataFileName, std::ios::binary | std::ios::out | std::ios::app);
@@ -41,7 +41,7 @@ static void readData(char*& dest, std::ifstream& fs) {
 static int parseStringToInt(char* data, std::ifstream& ifs) {
 	char symbol;
 	ifs.read((char*)&symbol, sizeof(char));
-	while (symbol != date_separator) {
+	while (symbol != date_separator && symbol != TASK_CONSTANTS::separator) {
 		(*data) = symbol;
 		ifs.read((char*)&symbol, sizeof(char));
 	}
@@ -57,6 +57,14 @@ static Date& getDateFromFile(std::ifstream& ifs) {
 	int yearInt = parseStringToInt(year, ifs);
 	Date date(dayInt, monthInt, yearInt);
 	return date;
+}
+Status stringToStatus(const char* str)
+{
+	if (strcompare(str, "ON_HOLD"))return Status::ON_HOLD;
+	else if (strcompare(str, "IN_PROCESS"))return Status::IN_PROCESS;
+	else if (strcompare(str, "DONE"))return Status::DONE;
+	else if (strcompare(str, "OVERDUE"))return Status::OVERDUE;
+	return Status::ON_HOLD;
 }
 void LoginCommand::getInfo(User& user) const
 {
@@ -99,7 +107,7 @@ void LoginCommand::getInfo(User& user) const
 		task.setDescription(description);
 		dashboard.addTask(task);
 	}
-	user.setDashboard(dashboard);
+	user.setTasks(dashboard);
 	ifs.clear();
 	ifs.close();
 	delete[] fileName;
@@ -109,10 +117,8 @@ void LoginCommand::execute(User& user) const
 	std::ifstream ifs(dataFileName, std::ios::binary | std::ios::in);
 	if (!ifs.is_open())throw std::logic_error("Cannot open file!");
 	char username[50];
-	std::cout << "Enter username: " << '\n' << '>';
 	std::cin >> username;
 	char password[50];
-	std::cout << "Enter password: " << '\n' << '>';
 	std::cin >> password;
 	char symbol;
 	while (!ifs.eof()) {
@@ -142,4 +148,54 @@ void LoginCommand::execute(User& user) const
 	ifs.clear();
 	ifs.close();
 	throw std::logic_error("No such account in existance!");
+}
+static Date stringToDate(const char* str) {
+	int day = 0;
+	while ((*str) != date_separator) {
+		(day *= 10) += (*str) - '0';
+		str++;
+	}
+	str++;
+	int month = 0;
+	while ((*str) != date_separator) {
+		(month *= 10) += (*str) - '0';
+		str++;
+	}
+	str++;
+	int year = 0;
+	while (*str) {
+		(year *= 10) += (*str) - '0';
+		str++;
+	}
+	Date date(day, month, year);
+	return date;
+}
+void AddTaskCommand::execute(User& user) const
+{
+	try {
+		Task task;
+		char name[256];
+		std::cin >> name;
+		char date[50];
+		std::cin >> date;
+		Date dateFormat = stringToDate(date);
+		char description[256];
+		std::cin >> description;
+		task.setId(id);
+		id++;
+		task.setDescription(description);
+		task.setName(name);
+		task.setDueDate(dateFormat);
+		size_t size = user.getTasks().getSize();
+		for (int i = 0;i < size;i++) {
+			if (strcompare(user.getTasks().getElement(i).getName(), name)) {
+				throw std::logic_error("Task already exists!");
+			}
+		}
+		user.updateTasks().addTask(task);
+		std::cout << "Task added successfully! \n";
+	}
+	catch (std::exception& ex) {
+		std::cout << ex.what() << '\n';
+	}
 }

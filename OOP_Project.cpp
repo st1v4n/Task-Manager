@@ -10,16 +10,26 @@
 #include "User.h"
 #include "Command.h"
 #include "AllCommands.h"
+#include "Factory.h"
 int main()
 {
     User user;
-    try {
-        Command* com = new LoginCommand;
-        com->execute(user);
-        delete com;
-    }
-    catch (std::exception& ex) {
-        std::cout << ex.what();
+    while (true) {
+        try {
+            char buff[30];
+            std::cin >> buff;
+            Command* command = factory(buff);
+            if (command != nullptr) {
+                command->execute(user);
+                delete command;
+            }
+            else {
+                std::cout << "Invalid command! \n";
+            }
+        }
+        catch (std::exception& ex) {
+            std::cout << ex.what() << std::endl;
+        }
     }
 }
 
