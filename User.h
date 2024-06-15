@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "StringFunctions.h"
+#include "Dashboard.h"
 //we will need a special symbol when we save a user to the database file
 const char user_symbol = '@';
 class User
@@ -14,9 +15,12 @@ public:
 	~User();
 	User(const char* username, const char* password);
 	const char* getUsername() const;
+	void setDashboard(const Dashboard& dashboard);
+	const Dashboard& getDashboard() const;
 private:
 	char* username = nullptr;
 	char* password = nullptr;
+	Dashboard tasks;
 	void free();
 	void copyFrom(const User& other);
 	void moveFrom(User&& other);

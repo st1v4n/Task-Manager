@@ -16,6 +16,7 @@ enum class Status {
 	DONE,
 	OVERDUE
 };
+static Status stringToStatus(const char* str);
 class Task
 {
 public:

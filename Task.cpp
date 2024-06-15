@@ -164,3 +164,12 @@ void Task::print(std::ostream& os, const Date& currentDate) const
 	}
 	os << TASK_CONSTANTS::border << '\n';
 }
+
+Status stringToStatus(const char* str)
+{
+	if (strcompare(str, "ON_HOLD"))return Status::ON_HOLD;
+	else if (strcompare(str, "IN_PROCESS"))return Status::IN_PROCESS;
+	else if (strcompare(str, "DONE"))return Status::DONE;
+	else if (strcompare(str, "OVERDUE"))return Status::OVERDUE;
+	return Status::ON_HOLD;
+}
