@@ -7,6 +7,7 @@ void Task::free()
 	name = nullptr;
 	delete[] description;
 	description = nullptr;
+	isAdded = false;
 }
 
 void Task::copyFrom(const Task& other)
@@ -18,6 +19,7 @@ void Task::copyFrom(const Task& other)
 	status = other.status;
 	description = new char[strleng(other.description) + 1];
 	strcopy(description, other.description);
+	this->isAdded = other.isAdded;
 }
 
 void Task::moveFrom(Task&& other)
@@ -33,6 +35,8 @@ void Task::moveFrom(Task&& other)
 	this->description = new char[strleng(other.description) + 1];
 	strcopy(description, other.description);
 	other.description = nullptr;
+	this->isAdded = other.isAdded;
+	other.isAdded = false;
 }
 
 Task::Task(const Task& other)
@@ -173,5 +177,10 @@ void Task::setAdded(bool isAdded)
 bool Task::isAddedToDashboard() const
 {
 	return isAdded;
+}
+
+bool Task::isDueDateSet() const
+{
+	return due_date.isValueSet();
 }
 

@@ -92,3 +92,10 @@ void User::printAllTasks(std::ostream& os) const
 		tasks.getElement(i).print(os,tasks.getCurrentDate());
 	}
 }
+
+void User::deleteUser()
+{
+	Date current_date = getTasks().getCurrentDate();
+	free();
+	updateTasks().setCurrentDate(current_date);
+}

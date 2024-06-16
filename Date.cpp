@@ -78,7 +78,7 @@ uint16_t Date::getRemainingDays(const Date& end) const
 {
 	Date start(*this);
 	if (end < start)return 0;
-	uint16_t count = 0;
+	uint32_t count = 0;
 	uint16_t maxDays = getDays(start.month, start.year);
 	while (!(start == end)) {
 		start.day++;
@@ -95,5 +95,6 @@ uint16_t Date::getRemainingDays(const Date& end) const
 	}
 	return count;
 }
+
 
 

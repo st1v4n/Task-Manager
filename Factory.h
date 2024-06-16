@@ -2,7 +2,7 @@
 #include <iostream>
 #include "AllCommands.h"
 #include "Task.h"
-
+//factory, returning pointers to the right classes 
 Command* factory(const char* str) {
 	if (!str) return nullptr;
 	if (strcompare(str, "register")) {
@@ -23,9 +23,6 @@ Command* factory(const char* str) {
 	else if (strcompare(str, "start-task")) {
 		return new StartTaskCommand;
 	}
-	else if (strcompare(str, "list-tasks")) {
-		return new ListTasksCommand;
-	}
 	else if (strcompare(str, "remove-task-from-dashboard")) {
 		return new RemoveTaskDashboardCommand;
 	}
@@ -37,6 +34,24 @@ Command* factory(const char* str) {
 	}
 	else if (strcompare(str, "get-task")) {
 		return new GetTaskCommand;
+	}
+	else if (strcompare(str, "list-tasks")) {
+		return new ListTasksCommand;
+	}
+	else if (strcompare(str, "list-completed-tasks")) {
+		return new ListCompletedTasksCommand;
+	}
+	else if (strcompare(str, "list-dashboard")) {
+		return new ListDashboardCommand;
+	}
+	else if (strcompare(str, "finish-task")) {
+		return new FinishTaskCommand;
+	}
+	else if (strcompare(str, "logout")) {
+		return new LogoutTaskCommand;
+	}
+	else if (strcompare(str, "exit")) {
+		return new ExitCommand;
 	}
 	return nullptr;
 }

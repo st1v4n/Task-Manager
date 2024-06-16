@@ -16,17 +16,19 @@ public:
 	User(const char* username, const char* password);
 	const char* getUsername() const;
 	void setTasks(const Dashboard& tasks);
+	//we have both constant and non-constant way of getting the tasks of the user
+	//when we just want to see something, we will use the constant getter
+	//when we want to change something, we will use the functions updateTasks
 	const Dashboard& getTasks() const;
 	Dashboard& updateTasks();
 	//all tasks
 	void printAllTasks(std::ostream& os) const;
-	//the dashboard tasks only
-	void printDashboard(const Date& date) const;
+	//a functions that will delete all the info of the user (logout command)
+	void deleteUser();
 private:
 	char* username = nullptr;
 	char* password = nullptr;
-	//all user tasks, I didnt get the rules correctly at first and created a Dashboard class
-	//The dashboard itself has a mutable bool variable that indicates if a specific task should be shown in the dashboard 
+	//all the user tasks will be called Dashboard, but only those who got added with a command to the dashboard will be displayed as dashboard tasks
 	Dashboard tasks;
 	void free();
 	void copyFrom(const User& other);

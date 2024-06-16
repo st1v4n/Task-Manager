@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+//a class that i wrote during Practicum course
+//found a good usage of it
 namespace vectorConstants {
 	const size_t capacityMultiplier = 2;
 };

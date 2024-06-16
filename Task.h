@@ -38,9 +38,11 @@ public:
 	void setStatus(Status status);
 	void setDescription(const char* description);
 	//print function can work with different output streams
+	//because it prints information about remaining days, it needs information about the current day
 	void print(std::ostream& os, const Date& currentDate) const;
 	void setAdded(bool isAdded);
 	bool isAddedToDashboard() const;
+	bool isDueDateSet() const;
 private:
 	int id = 0;
 	char* name = nullptr;
