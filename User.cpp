@@ -71,6 +71,11 @@ const char* User::getUsername() const
 {
 	return username;
 }
+void User::setUsername(const char* newUsername)
+{
+	username = new char[strleng(newUsername) + 1];
+	strcopy(username, newUsername);
+}
 void User::setTasks(const Dashboard& tasks)
 {
 	this->tasks = tasks;

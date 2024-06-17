@@ -15,6 +15,7 @@ public:
 	~User();
 	User(const char* username, const char* password);
 	const char* getUsername() const;
+	void setUsername(const char* newUsername);
 	void setTasks(const Dashboard& tasks);
 	//we have both constant and non-constant way of getting the tasks of the user
 	//when we just want to see something, we will use the constant getter
