@@ -21,13 +21,16 @@ public:
 	const User& getWorker(int index)const;
 	void save(std::ofstream& ofs) const;
 	void load(std::ifstream& ifs);
+	void deleteCollab(User& currentUser);
 private:
 	char* name = nullptr;
 	int id = 0;
 	User creator;
 	myVector<User> workers;
+	myVector<Task> tasks;
 	void free();
 	void copyFrom(const Collaboration& other);
 	void moveFrom(Collaboration&& other);
+	void removeTasksByUser(User& user);
 };
 

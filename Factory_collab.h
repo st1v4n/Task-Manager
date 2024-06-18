@@ -8,7 +8,9 @@ Collab_Command* factory_collab(const char* str) {
 	if (strcompare(str, "add-collaboration")) {
 		return new AddCollab;
 	}
-
+	else if (strcompare(str, "delete-collaboration")) {
+		return new DeleteCollab;
+	}
 
 
 	return nullptr;

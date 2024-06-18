@@ -2,7 +2,6 @@
 //another solution could be each of the commands having a different file
 #include "AllCommands.h"
 int globalId = 1;
-const char eof_symbol = '$';
 void RegisterCommand::execute(User& user) const
 {
 	//our register command will add to data.dat only the username and password of each user
@@ -489,7 +488,9 @@ void LogoutTaskCommand::execute(User& user) const
 
 void ExitCommand::execute(User& user) const
 {
-	LogoutTaskCommand logout;
-	logout.execute(user);
+	if (user.getUsername() != nullptr) {
+		LogoutTaskCommand logout;
+		logout.execute(user);
+	}
 	throw std::runtime_error("Exiting from the program!");
 }

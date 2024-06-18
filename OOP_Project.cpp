@@ -49,7 +49,7 @@ int main()
                 delete command;
             }
             else if (collab_command != nullptr) {
-                collab_command->execute(collaborations);
+                collab_command->execute(collaborations, user);
                 user.updateTasks().setCurrentDate(currentDate);
                 delete collab_command;
             }

@@ -90,7 +90,10 @@ void Collaboration::save(std::ofstream& ofs) const
 
 void Collaboration::load(std::ifstream& ifs)
 {
-	readStringFromFile(ifs, name);
+	char buffName[50];
+	readStringFromFile(ifs, buffName);
+	name = new char[strleng(buffName) + 1];
+	strcopy(name, buffName);
 	ifs.read((char*)&id, sizeof(int));
 	char buff[50];
 	readStringFromFile(ifs, buff);
@@ -100,6 +103,33 @@ void Collaboration::load(std::ifstream& ifs)
 		char buffer[50];
 		readStringFromFile(ifs, buffer);
 		workers[i].setUsername(buffer);
+	}
+}
+void Collaboration::removeTasksByUser(User& user) {
+	size_t size = user.getTasks().getSize();
+	for (int i = 0;i < size; i++) {
+		Task current_task = user.getTasks().getElement(i);
+		size_t tasks_size = tasks.getSize();
+		for (int j = 0;j < tasks_size;j++) {
+			if (strcompare(current_task.getName(), tasks[j].getName())) {
+				user.updateTasks().deleteElement(i);
+			}
+		}
+	}
+}
+void Collaboration::deleteCollab(User& currentUser)
+{
+	if (currentUser == creator) {
+		name = nullptr;
+		removeTasksByUser(creator);
+		size_t sizeWorkers = workers.getSize();
+		for (int i = 0;i < sizeWorkers;i++) {
+			User current_user = workers[i];
+			removeTasksByUser(current_user);
+		}
+	}
+	else {
+		throw std::logic_error("Only creator can delete collab! \n");
 	}
 }
 

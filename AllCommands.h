@@ -4,6 +4,7 @@
 #include "Command.h"
 #include "User.h"
 const char dataFileName[] = "data.dat";
+const char eof_symbol = '$';
 class RegisterCommand : public Command {
 	void execute(User& user) const override;
 };

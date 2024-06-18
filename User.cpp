@@ -104,3 +104,8 @@ void User::deleteUser()
 	free();
 	updateTasks().setCurrentDate(current_date);
 }
+
+bool operator==(const User& user1, const User& user2)
+{
+	return (strcompare(user1.username, user2.username));
+}

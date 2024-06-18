@@ -47,10 +47,16 @@ static char* strconcat(const char* str1, const char* str2) {
 }
 static void readStringFromFile(std::ifstream& ifs, char* str) {
 	char symbol;
-	ifs.read((char*)&symbol, sizeof(char));
+	if (!ifs.eof()) {
+		ifs.read((char*)&symbol, sizeof(char));
+	}
+	else {
+		return;
+	}
 	while (symbol != '\0') {
 		(*str) = symbol;
 		str++;
+		if (ifs.eof())return;
 		ifs.read((char*)&symbol, sizeof(char));
 	}
 	(*str) = '\0';

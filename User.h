@@ -26,6 +26,7 @@ public:
 	void printAllTasks(std::ostream& os) const;
 	//a functions that will delete all the info of the user (logout command)
 	void deleteUser();
+	friend bool operator==(const User& user1, const User& user2);
 private:
 	char* username = nullptr;
 	char* password = nullptr;

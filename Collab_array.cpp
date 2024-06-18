@@ -1,5 +1,6 @@
 #include "Collab_array.h"
 static const char collab_file_name[20] = "collabs.dat";
+static const char eof_symbol = '$';
 void Collab_array::loadFromFile()
 {
 	std::ifstream ifs(collab_file_name, std::ios::binary | std::ios::in);
@@ -7,11 +8,15 @@ void Collab_array::loadFromFile()
 		std::cout << "No collaborations! \n";
 		return;
 	}
-	while (!ifs.eof()) {
+	//for some reason the eof bit does not seem to work and completely destroys my file
+	//so i will save a new special symbol that indicates the end of the file!!!!
+	while (ifs.peek()!= eof_symbol) {
 		Collaboration newCollab;
 		newCollab.load(ifs);
 		collabs.push_back(newCollab);
 	}
+	ifs.clear();
+	ifs.close();
 }
 void Collab_array::saveToFile() const
 {
@@ -22,6 +27,28 @@ void Collab_array::saveToFile() const
 	}
 	size_t size = collabs.getSize();
 	for (int i = 0;i < size;i++) {
-		collabs[i].save(ofs);
+		if (collabs[i].getName() != nullptr) {
+			collabs[i].save(ofs);
+		}
 	}
+	ofs.write((const char*)&eof_symbol, sizeof(char));
+	ofs.clear();
+	ofs.close();
+}
+
+void Collab_array::addCollab(const Collaboration& new_collab)
+{
+	collabs.push_back(new_collab);
+}
+
+void Collab_array::removeCollab(const char* name, User& currentUser)
+{
+	size_t size = collabs.getSize();
+	for (int i = 0;i < size;i++) {
+		if (strcompare(collabs[i].getName(), name)) {
+			collabs[i].deleteCollab(currentUser);
+			return;
+		}
+	}
+	throw std::logic_error("Collab not found!");
 }
