@@ -42,6 +42,7 @@ void Collaboration::setName(const char* name)
 
 void Collaboration::setId(int id)
 {
+	if (id < 0)return;
 	this->id = id;
 }
 
@@ -98,12 +99,14 @@ void Collaboration::load(std::ifstream& ifs)
 	char buff[50];
 	readStringFromFile(ifs, buff);
 	creator.setUsername(buff);
-	size_t size = workers.getSize();
-	for (int i = 0;i < size;i++) {
+	while (ifs.peek() != TASK_CONSTANTS::separator) {
 		char buffer[50];
 		readStringFromFile(ifs, buffer);
-		workers[i].setUsername(buffer);
+		User current_user;
+		current_user.setUsername(buffer);
+		workers.push_back(current_user);
 	}
+	ifs.ignore();
 }
 void Collaboration::removeTasksByUser(User& user) {
 	size_t size = user.getTasks().getSize();
@@ -131,6 +134,41 @@ void Collaboration::deleteCollab(User& currentUser)
 	else {
 		throw std::logic_error("Only creator can delete collab! \n");
 	}
+}
+
+size_t Collaboration::getSizeWorkers() const
+{
+	return workers.getSize();
+}
+
+bool Collaboration::findUser(const char* username) const
+{
+	if (strcompare(username, creator.getUsername()))return true;
+	size_t size = workers.getSize();
+	for (int i = 0;i < size;i++) {
+		if (strcompare(username, workers[i].getUsername())) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void Collaboration::print() const
+{
+	std::cout << TASK_CONSTANTS::border << '\n';
+	std::cout << "Collaboration name: " << name << '\n';
+	std::cout << "Collaboration id: " << id << '\n';
+	std::cout << "Creator: " << creator.getUsername() << '\n';
+}
+
+size_t Collaboration::getSizeTasks() const
+{
+	return tasks.getSize();
+}
+
+const Task& Collaboration::getTask(int index) const
+{
+	return tasks[index];
 }
 
 void Collaboration::free()

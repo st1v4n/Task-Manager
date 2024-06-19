@@ -29,6 +29,7 @@ void Collab_array::saveToFile() const
 	for (int i = 0;i < size;i++) {
 		if (collabs[i].getName() != nullptr) {
 			collabs[i].save(ofs);
+			ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
 		}
 	}
 	ofs.write((const char*)&eof_symbol, sizeof(char));
@@ -51,4 +52,25 @@ void Collab_array::removeCollab(const char* name, User& currentUser)
 		}
 	}
 	throw std::logic_error("Collab not found!");
+}
+
+size_t Collab_array::getSize() const
+{
+	return collabs.getSize();
+}
+
+const Collaboration& Collab_array::getCollab(int index) const
+{
+	return collabs[index];
+}
+
+Collaboration& Collab_array::findCollab(const char* collabName)
+{
+	size_t size = collabs.getSize();
+	for (int i = 0;i < size;i++) {
+		if (strcompare(collabName, collabs[i].getName())) {
+			return collabs[i];
+		}
+	}
+	throw std::logic_error("Collaboration doesnt exist! \n");
 }

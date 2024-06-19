@@ -22,6 +22,11 @@ public:
 	void save(std::ofstream& ofs) const;
 	void load(std::ifstream& ifs);
 	void deleteCollab(User& currentUser);
+	size_t getSizeWorkers() const;
+	bool findUser(const char* username) const;
+	void print() const;
+	size_t getSizeTasks() const;
+	const Task& getTask(int index) const;
 private:
 	char* name = nullptr;
 	int id = 0;

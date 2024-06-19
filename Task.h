@@ -44,7 +44,7 @@ public:
 	bool isAddedToDashboard() const;
 	bool isDueDateSet() const;
 private:
-	int id = 0;
+	int id = 1;
 	char* name = nullptr;
 	Optional<Date> due_date;
 	Status status = Status::ON_HOLD;
