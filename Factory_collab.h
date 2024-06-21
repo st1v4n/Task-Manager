@@ -17,7 +17,9 @@ Collab_Command* factory_collab(const char* str) {
 	else if (strcompare(str, "add-user")) {
 		return new AddUserCollab;
 	}
-
+	else if (strcompare(str, "assign-task")) {
+		return  new AssignTaskCollab;
+	}
 	else if (strcompare(str, "list-tasks")) {
 		return new ListTasksCollab;
 	}

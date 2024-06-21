@@ -64,8 +64,9 @@ static void readStringFromFile(std::ifstream& ifs, char* str) {
 static int stringToInt(const char* str) {
 	if (!str)return -1;
 	int result=0;
+	int symbol_null = '0';
 	while (*str) {
-		(result *= 10) += (*str) - '0';
+		(result *= 10) += (*str) - symbol_null;
 		str++;
 	}
 	return result;
@@ -76,18 +77,21 @@ static Date stringToDate(const char* str) {
 		while ((*str) == ' ')str++;
 		int day = 0;
 		while ((*str) != date_separator) {
+			if ((*str) < '0' || (*str) > '9')throw std::logic_error("Unknown symbol! \n");
 			(day *= 10) += (*str) - '0';
 			str++;
 		}
 		str++;
 		int month = 0;
 		while ((*str) != date_separator) {
+			if ((*str) < '0' || (*str) > '9')throw std::logic_error("Unknown symbol! \n");
 			(month *= 10) += (*str) - '0';
 			str++;
 		}
 		str++;
 		int year = 0;
 		while (*str) {
+			if ((*str) < '0' || (*str) > '9')throw std::logic_error("Unknown symbol! \n");
 			(year *= 10) += (*str) - '0';
 			str++;
 		}

@@ -14,7 +14,10 @@ class ListCollab : public Collab_Command {
 class AddUserCollab : public Collab_Command {
 	void execute(Collab_array& collab, User& currentUser) const override;
 };
-
+class AssignTaskCollab : public Collab_Command {
+	void execute(Collab_array& collab, User& currentUser) const override;
+};
 class ListTasksCollab : public Collab_Command {
 	void execute(Collab_array& collab, User& currentUser) const override;
 };
+

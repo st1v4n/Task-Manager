@@ -20,21 +20,23 @@ void Collab_array::loadFromFile()
 }
 void Collab_array::saveToFile() const
 {
-	std::ofstream ofs(collab_file_name, std::ios::binary | std::ios::out);
-	if (!ofs.is_open()) {
-		std::cout << "Failed to save collabs! \n";
-		return;
-	}
 	size_t size = collabs.getSize();
-	for (int i = 0;i < size;i++) {
-		if (collabs[i].getName() != nullptr) {
-			collabs[i].save(ofs);
-			ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
+	if (size != 0) {
+		std::ofstream ofs(collab_file_name, std::ios::binary | std::ios::out);
+		if (!ofs.is_open()) {
+			std::cout << "Failed to save collabs! \n";
+			return;
 		}
+		for (int i = 0;i < size;i++) {
+			if (collabs[i].getName() != nullptr) {
+				collabs[i].save(ofs);
+				ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
+			}
+		}
+		ofs.write((const char*)&eof_symbol, sizeof(char));
+		ofs.clear();
+		ofs.close();
 	}
-	ofs.write((const char*)&eof_symbol, sizeof(char));
-	ofs.clear();
-	ofs.close();
 }
 
 void Collab_array::addCollab(const Collaboration& new_collab)

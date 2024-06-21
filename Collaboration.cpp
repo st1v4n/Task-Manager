@@ -171,6 +171,18 @@ const Task& Collaboration::getTask(int index) const
 	return tasks[index];
 }
 
+const User& Collaboration::getUser(const char* username)
+{
+	if (strcompare(username, creator.getUsername()))return creator;
+	size_t size = workers.getSize();
+	for (int i = 0;i < size;i++) {
+		if (strcompare(username, workers[i].getUsername())) {
+			return workers[i];
+		}
+	}
+	throw std::logic_error("User not found! \n");
+}
+
 void Collaboration::free()
 {
 	delete[] name;

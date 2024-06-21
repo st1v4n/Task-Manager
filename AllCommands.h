@@ -9,6 +9,7 @@ class RegisterCommand : public Command {
 	void execute(User& user) const override;
 };
 class LoginCommand : public Command {
+public:
 	void getInfo(User& user) const;
 	void execute(User& user) const override;
 };
@@ -54,8 +55,8 @@ class FinishTaskCommand : public Command {
 	void execute(User& user) const override;
 };
 class LogoutTaskCommand : public Command {
-	void save(User& user) const;
 public:
+	void save(User& user) const;
 	void execute(User& user) const override;
 };
 class ExitCommand : public Command {

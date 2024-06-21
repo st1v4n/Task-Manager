@@ -91,3 +91,36 @@ void ListTasksCollab::execute(Collab_array& collab, User& currentUser) const
 		}
 	}
 }
+
+void AssignTaskCollab::execute(Collab_array& collab, User& currentUser) const
+{
+	char collab_name[50];
+	std::cin >> collab_name;
+	try {
+		Collaboration current_collab = collab.findCollab(collab_name);
+		char username[50];
+		std::cin >> username;
+		if (current_collab.findUser(username)) {
+			User user = current_collab.getUser(username);
+			Command* add = new AddTaskCommand;
+			//we will use their files to add and save the assigned tasks
+			//therefore we need to check if the currentUser is the one that gets the tasks
+			if (user == currentUser) {
+				add->execute(currentUser);
+			}
+			else {
+				LoginCommand login;
+				LogoutTaskCommand logout;
+				login.getInfo(user);
+				add->execute(user);
+				logout.save(user);
+			}
+			delete add;
+		}
+
+	}
+	catch (std::exception& ex) {
+		std::cout << ex.what();
+		return;
+	}
+}

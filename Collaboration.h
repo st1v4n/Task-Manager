@@ -27,6 +27,7 @@ public:
 	void print() const;
 	size_t getSizeTasks() const;
 	const Task& getTask(int index) const;
+	const User& getUser(const char* username);
 private:
 	char* name = nullptr;
 	int id = 0;

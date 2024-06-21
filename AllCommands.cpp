@@ -10,10 +10,8 @@ void RegisterCommand::execute(User& user) const
 	std::ofstream ofs(dataFileName, std::ios::binary | std::ios::out | std::ios::app);
 	if(!ofs.is_open())throw std::logic_error("Cannot open file!");
 	char username[50];
-	std::cout << "Enter username: " << '\n' << '>';
 	std::cin >> username;
 	char password[50];
-	std::cout << "Enter password: " << '\n' << '>';
 	std::cin >> password;
 	try {
 		User newUser(username, password);
@@ -29,6 +27,7 @@ void RegisterCommand::execute(User& user) const
 		ofs.clear();
 		return;
 	}
+	std::cout << "Registered successfully! \n";
 	ofs.clear();
 	ofs.close();
 }
@@ -91,7 +90,6 @@ void LoginCommand::getInfo(User& user) const
 	//the Dashboard from the rules is actually a part of all tasks (from a specific date)
 	Dashboard dashboard;
 	while (ifs.peek() != eof_symbol) {
-		char s = ifs.peek();
 		//kinda Introduction to Programming logic here, maybe I could create a new file to hide it better
 		Task task;
 		int id;
@@ -371,7 +369,7 @@ void ListTasksCommand::executeWithDate(User& user, const Date& input_date) const
 {
 	size_t size = user.getTasks().getSize();
 	for (int i = 0;i < size;i++) {
-		if (user.getTasks().getElement(i).getDueDate() == input_date) {
+		if (user.getTasks().getElement(i).isDueDateSet() && user.getTasks().getElement(i).getDueDate() == input_date) {
 			user.getTasks().getElement(i).print(std::cout, user.getTasks().getCurrentDate());
 		}
 	}
@@ -438,44 +436,46 @@ void FinishTaskCommand::execute(User& user) const
 
 void LogoutTaskCommand::save(User& user) const
 {
-	char* fileName = strconcat(user.getUsername(), ".dat");
-	std::ofstream ofs(fileName, std::ios::binary | std::ios::out);
-	if (!ofs.is_open()) {
-		std::cout << "Cannot open file for writing! \n";
-		return;
-	}
 	size_t size = user.getTasks().getSize();
-	for (int i = 0;i < size;i++) {
-		Task current_task = user.getTasks().getElement(i);
-		int id = current_task.getId();
-		ofs.write((const char*)&id, sizeof(int));
-		ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
-		int lenName = strleng(current_task.getName());
-		ofs.write(current_task.getName(), lenName + 1);
-		ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
-		if (current_task.isDueDateSet()) {
-			ofs.write((const char*)&TASK_CONSTANTS::special_date_symbol, sizeof(char));
-			char* date = dateToString(current_task.getDueDate());
-			size_t size = strleng(date);
-			ofs.write(date, size); // we will need no '\0' at the end 
-			delete[] date;
+	if (size != 0) {
+		char* fileName = strconcat(user.getUsername(), ".dat");
+		std::ofstream ofs(fileName, std::ios::binary | std::ios::out);
+		if (!ofs.is_open()) {
+			std::cout << "Cannot open file for writing! \n";
+			return;
 		}
-		ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
-		char* status = current_task.convertStatusToString();
-		size_t sizeStatus = strleng(status);
-		ofs.write(status, sizeStatus + 1);
-		delete[] status;
-		ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
-		ofs.write(current_task.getDescription(), strleng(current_task.getDescription()) + 1);
-		ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
-		if(i==size-1) {
-			ofs.write((const char*)&eof_symbol, sizeof(char));
+		for (int i = 0;i < size;i++) {
+			Task current_task = user.getTasks().getElement(i);
+			int id = current_task.getId();
+			ofs.write((const char*)&id, sizeof(int));
+			ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
+			int lenName = strleng(current_task.getName());
+			ofs.write(current_task.getName(), lenName + 1);
+			ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
+			if (current_task.isDueDateSet()) {
+				ofs.write((const char*)&TASK_CONSTANTS::special_date_symbol, sizeof(char));
+				char* date = dateToString(current_task.getDueDate());
+				size_t size = strleng(date);
+				ofs.write(date, size); // we will need no '\0' at the end 
+				delete[] date;
+			}
+			ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
+			char* status = current_task.convertStatusToString();
+			size_t sizeStatus = strleng(status);
+			ofs.write(status, sizeStatus + 1);
+			delete[] status;
+			ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
+			ofs.write(current_task.getDescription(), strleng(current_task.getDescription()) + 1);
+			ofs.write((const char*)&TASK_CONSTANTS::separator, sizeof(char));
+			if (i == size - 1) {
+				ofs.write((const char*)&eof_symbol, sizeof(char));
+			}
 		}
-	}
 
-	delete[] fileName;
-	ofs.clear();
-	ofs.close();
+		delete[] fileName;
+		ofs.clear();
+		ofs.close();
+	}
 }
 
 void LogoutTaskCommand::execute(User& user) const
