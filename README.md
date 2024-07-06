@@ -25,4 +25,4 @@ my project for the OOP Practicum course - TASK MANAGER
 ПРИ ТЕГЛЕНЕ НА ZIP ПАПКАТА, МОЛЯ ИЗПОЛЗВАЙТЕ ВСИЧКИ ФАЙЛОВЕ БЕЗ ПАПКАТА INSTRUCTONS
 
 Благодаря!
-- Стивън Александров - СИ - 3MI0600301
+- Стивън Александров 
