@@ -5,4 +5,5 @@
 class Command {
 public:
 	virtual void execute(User& user) const = 0;
+        virtual ~Command() = default; // virtual destructor
 };
